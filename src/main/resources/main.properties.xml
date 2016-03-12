@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <comment>ESPF application properties</comment>
+    <entry key="app.window.width">1000</entry>
+    <entry key="app.window.height">800</entry>
+    <entry key="app.title">ESPF Simulator</entry>
+    <entry key="app.server.port">18000</entry>
+    <entry key="app.printer.name">Primacy Test</entry>
+    <entry key="app.printer.ribbon">B_KBLACK</entry>
+</properties>
