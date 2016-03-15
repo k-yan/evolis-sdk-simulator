@@ -5,9 +5,11 @@ import com.kyanlife.code.evolis.ESPFRequestListener;
 import com.kyanlife.code.evolis.ESPFResponse;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Calendar;
 
 import com.fasterxml.jackson.databind.*;
 import com.kyanlife.code.evolis.printer.PrinterManager;
@@ -20,6 +22,9 @@ import org.slf4j.LoggerFactory;
 public class JSONRequestHandler extends Thread {
 
     Logger logger = LoggerFactory.getLogger(JSONRequestHandler.class);
+
+    // maximum time to read request input
+    static int REQUEST_INPUT_TIMEOUT = 5000;
 
     private Socket socket = null;
     ESPFRequestListener listener;
@@ -35,7 +40,7 @@ public class JSONRequestHandler extends Thread {
         try {
 
             // read request
-
+            long requestStatTime = Calendar.getInstance().getTimeInMillis();
 
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(
@@ -44,13 +49,24 @@ public class JSONRequestHandler extends Thread {
             StringBuilder requestString = new StringBuilder();
 
             boolean hasMoreInput = true;
-            while ( hasMoreInput && !socket.isInputShutdown() ) {
+            while ( hasMoreInput ) {
                 inputLine = in.readLine();
                 if ( inputLine == null ) {
                     hasMoreInput = false;
                 } else {
                     requestString.append(inputLine);
                 }
+
+                // if request string is valid JSON, then request is complete
+                if ( isJSONValid (requestString.toString()) ) {
+                    hasMoreInput = false;
+                }
+
+                // if request input timeout reached, stop reading input.
+                if ( Calendar.getInstance().getTimeInMillis() - requestStatTime > REQUEST_INPUT_TIMEOUT ) {
+                    hasMoreInput = false;
+                }
+
             }
 
             // send response
@@ -87,5 +103,15 @@ public class JSONRequestHandler extends Thread {
             responseString = "{ error } ";
         }
         return responseString;
+    }
+
+    public boolean isJSONValid (String jsonInString) {
+        try {
+            final ObjectMapper mapper = new ObjectMapper();
+            mapper.readTree(jsonInString);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 }
