@@ -22,7 +22,9 @@ public class JSONRequestHandler extends Thread {
     Logger logger = LoggerFactory.getLogger(JSONRequestHandler.class);
 
     // maximum time to read request input
-    static int REQUEST_INPUT_TIMEOUT = 10000;
+    static int REQUEST_INPUT_TIMEOUT = 15000;
+
+    static int BUFFER_SIZE = 1024;
 
     private Socket socket = null;
     ESPFRequestListener listener;
@@ -42,21 +44,24 @@ public class JSONRequestHandler extends Thread {
             // read request
             long requestStatTime = Calendar.getInstance().getTimeInMillis();
 
-            DataInputStream in = new DataInputStream(socket.getInputStream());
+            InputStreamReader in = new InputStreamReader(socket.getInputStream(), "UTF-8");
 
             logger.debug("Reading socket input stream: " + in);
             String inputLine;
             StringBuilder requestString = new StringBuilder();
 
             boolean hasMoreInput = true;
-            logger.debug("Available input : " + in.available());
 
-            byte[] tempInputBuffer = new byte[1024];
+            char[] tempInputBuffer = new char[BUFFER_SIZE];
 
             while ( hasMoreInput ) {
 
+                int amntRead = in.read(tempInputBuffer);
+
+                logger.debug("Amount data read : " + amntRead);
                 // if nothing is available
-                if ( in.available() < 1 ) {
+                if ( amntRead < BUFFER_SIZE ) {
+
                     // if request input timeout reached, stop reading input.
                     if (Calendar.getInstance().getTimeInMillis() - requestStatTime > REQUEST_INPUT_TIMEOUT) {
                         logger.debug("Request timeout");
@@ -64,31 +69,30 @@ public class JSONRequestHandler extends Thread {
                         break;
                     }
                     // sleep then retry
-                    Thread.sleep(100);
-                } else {
-
-                    in.read(tempInputBuffer);
-                    inputLine = new String(tempInputBuffer);
-
-                    if (inputLine == null ) {
-                        logger.debug("Input stream is NULL");
-                        hasMoreInput = false;
-                    } else {
-                        requestString.append(inputLine);
-
-                        // if request string is valid JSON, then request is complete
-                        if (inputLine.trim().endsWith("}")
-                                && isJSONValid(requestString.toString())) {
-                            logger.debug("Request is valid JSON object");
-                            hasMoreInput = false;
-                        }
-                    }
-
                 }
+
+                Thread.sleep(50);
+
+                inputLine = new String(tempInputBuffer);
+
+                if (inputLine == null ) {
+                    logger.debug("Input stream is NULL");
+                    hasMoreInput = false;
+                } else {
+                    requestString.append(inputLine);
+
+                    // if request string is valid JSON, then request is complete
+                    if (inputLine.trim().endsWith("}")
+                            && isJSONValid(requestString.toString())) {
+                        logger.debug("Request is valid JSON object");
+                        hasMoreInput = false;
+                    }
+                }
+
             }
 
             // add response delay to simulate network or resource delay
-            Thread.sleep(MainProperties.getInteger("app.response.delay"));
+            //Thread.sleep(MainProperties.getInteger("app.response.delay"));
 
             logger.debug("Try to handle request: " + requestString);
 

@@ -110,7 +110,7 @@ public class PrinterManager {
                 try {
                     logger.debug("handle print.setbitmap");
 
-                    String bitmapString = request.getParams().getData();
+                    String bitmapString = request.getParams().getData().toString();
 
                     broadcastPrintEvent(new SetBitmapEvent(request.getParams().getFace(),
                             bitmapString));
