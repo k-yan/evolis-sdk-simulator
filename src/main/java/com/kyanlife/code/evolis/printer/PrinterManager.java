@@ -73,6 +73,7 @@ public class PrinterManager {
                     response.setResult("Command not found");
                 }
 
+                break;
             }
                 // handle print initiate request
             case "print.begin" : {
@@ -81,6 +82,7 @@ public class PrinterManager {
 
                 if ( printer != null ) {
                     String jobId = printer.createJob();
+                    logger.debug("print.begin create job:" + jobId);
                     response = ESPFResponse.genericOKResponse(request.getId());
                     response.setResult(jobId);
 
@@ -89,23 +91,25 @@ public class PrinterManager {
                     response.setResult("Device not found");
                 }
 
+                break;
             }
 
             case "print.set": {
+                logger.debug("handle print.set");
                 String deviceName = request.getParams().getDevice();
-
                 if (printers.containsKey(deviceName)) {
-                    Printer printer = printerManager.getPrinter(deviceName);
-                    String jobId = printer.createJob();
                     response = ESPFResponse.genericOKResponse(request.getId());
-                    response.setResult(jobId);
                 } else {
                     response.setResult("Device not found");
                 }
+
+                break;
             }
 
             case "print.setbitmap": {
                 try {
+                    logger.debug("handle print.setbitmap");
+
                     String bitmapString = request.getParams().getData();
 
                     broadcastPrintEvent(new SetBitmapEvent(request.getParams().getFace(),
@@ -117,32 +121,35 @@ public class PrinterManager {
                     e.printStackTrace();
                 }
 
+                break;
             }
 
             case "print.print": {
+                logger.debug("handle print.print");
+
                 Printer printer = getPrinter(request);
 
                 if (printer != null) {
-                    String jobId = printer.createJob();
                     response = ESPFResponse.genericOKResponse(request.getId());
-                    response.setResult(jobId);
                 } else {
                     response.setResult("Device not found");
                 }
 
+                break;
             }
 
             case "print.end": {
+                logger.debug("handle print.end");
+
                 String deviceName = request.getParams().getDevice();
 
                 if (printers.containsKey(deviceName)) {
-                    Printer printer = printerManager.getPrinter(deviceName);
-                    String jobId = printer.createJob();
                     response = ESPFResponse.genericOKResponse(request.getId());
-                    response.setResult(jobId);
                 } else {
                     response.setResult("Device not found");
                 }
+
+                break;
             }
 
         }
