@@ -12,6 +12,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.apache.commons.codec.binary.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -21,7 +23,9 @@ import java.io.InputStream;
  */
 public class IDCardViewController implements PrintEventListener {
 
-    private static String DEFAULT_IMAGE_PATH = "com/kyanlife/code/evolis/fxml/BlankImage.bmp";
+    Logger logger = LoggerFactory.getLogger(IDCardViewController.class);
+
+    private static String DEFAULT_IMAGE_PATH = "/com/kyanlife/code/evolis/fxml/BlankImage.bmp";
 
     @FXML private Label printJobId;
 
@@ -82,7 +86,7 @@ public class IDCardViewController implements PrintEventListener {
             cardFrontImage = new Image(is);
             cardFrontImageView.setImage(cardFrontImage);
         } catch (Exception e) {
-
+            logger.error("Error while setting front image: " + e);
         }
     }
 
@@ -91,7 +95,7 @@ public class IDCardViewController implements PrintEventListener {
             cardBackImage = new Image(is);
             cardBackImageView.setImage(cardBackImage);
         } catch (Exception e) {
-
+            logger.error("Error while setting back image: " + e);
         }
     }
 }
