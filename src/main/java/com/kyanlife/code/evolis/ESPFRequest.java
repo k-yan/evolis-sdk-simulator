@@ -12,7 +12,7 @@ public class ESPFRequest {
     String id;
     String jsonrpc = "2.0";
     String method;
-    Map<String, String> params;
+    ESPFRequestParameters params;
 
     public String getId() {
         return id;
@@ -38,11 +38,11 @@ public class ESPFRequest {
         this.method = method;
     }
 
-    public Map<String, String> getParams() {
+    public ESPFRequestParameters getParams() {
         return params;
     }
 
-    public void setParams(Map<String, String> params) {
+    public void setParams(ESPFRequestParameters params) {
         this.params = params;
     }
 
@@ -52,7 +52,7 @@ public class ESPFRequest {
                 "id='" + id + '\'' +
                 ", jsonrpc='" + jsonrpc + '\'' +
                 ", method='" + method + '\'' +
-                ", params=" + params +
+                ", params=" + params.toString() +
                 '}';
     }
 }

@@ -11,10 +11,6 @@ public class ESPFResponse {
 
     String result;
 
-    public String toString() {
-        return "Response OK";
-    }
-
     public String getId() {
         return id;
     }
@@ -46,5 +42,13 @@ public class ESPFResponse {
         response.setResult("Error");
 
         return response;
+    }
+
+    @Override
+    public String toString() {
+        return "ESPFResponse{" +
+                "id='" + id + '\'' +
+                ", result='" + result + '\'' +
+                '}';
     }
 }

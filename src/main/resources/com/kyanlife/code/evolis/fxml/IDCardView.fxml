@@ -6,7 +6,7 @@
 <GridPane fx:controller="com.kyanlife.code.evolis.controller.IDCardViewController"
           xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
 
-    <Label GridPane.columnIndex="0" GridPane.rowIndex="0">Print Job:</Label>
+    <Label fx:id="printJobId" GridPane.columnIndex="0" GridPane.rowIndex="0">Print Job:</Label>
 
     <Label GridPane.columnIndex="0" GridPane.rowIndex="1">Front</Label>
 
@@ -22,5 +22,5 @@
 
     <Label GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="2">Request/Response long</Label>
 
-    <TextArea GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="2" GridPane.fillHeight="300" GridPane.fillWidth="850" />
+    <TextArea fx:id="requestLogArea" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="2" GridPane.fillHeight="300" GridPane.fillWidth="850" />
 </GridPane>

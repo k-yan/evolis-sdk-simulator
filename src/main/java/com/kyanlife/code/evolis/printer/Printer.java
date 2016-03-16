@@ -10,6 +10,7 @@ public class Printer {
     String deviceName;
     String ribbonType;
     int jobCounter = 1;
+
     HashMap<String, PrintJob> printJobs = new HashMap<String, PrintJob>();
 
     public Printer (String deviceName, String ribbonType) {
@@ -25,7 +26,7 @@ public class Printer {
         return ribbonType;
     }
 
-    public String initialJob () {
+    public String createJob() {
         PrintJob printJob = new PrintJob(jobCounter);
         printJobs.put(printJob.getJobId(), printJob);
         jobCounter++;

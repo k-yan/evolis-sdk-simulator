@@ -12,8 +12,8 @@ public class PrintEvent {
 
     }
 
-    public PrintEvent(String eventType, String eventDescription) {
-        this.eventType = eventType;
+    public PrintEvent(String eventDescription) {
+        this.eventType = "Genric";
         this.eventDescription = eventDescription;
     }
 

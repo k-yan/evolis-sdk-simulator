@@ -3,16 +3,12 @@ package com.kyanlife.code.evolis.printer;
 
 import com.kyanlife.code.evolis.ESPFRequest;
 import com.kyanlife.code.evolis.ESPFResponse;
+import com.kyanlife.code.evolis.events.CreatePrintJobEvent;
 import com.kyanlife.code.evolis.events.PrintEvent;
+import com.kyanlife.code.evolis.events.SetBitmapEvent;
 import com.kyanlife.code.evolis.listener.PrintEventListener;
-import javafx.fxml.FXML;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.misc.BASE64Decoder;
-
-import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,90 +48,126 @@ public class PrinterManager {
     }
 
     public ESPFResponse processRequest (ESPFRequest request) {
-        ESPFResponse response = ESPFResponse.genericErrorResponse(request.getId());
+
+        ESPFResponse response = ESPFResponse.genericErrorResponse(request.getMethod());
 
         logger.debug("Process request - method: " + request.getMethod());
 
-        // Handle request command
-        if ( "CMD.SendCommand".equalsIgnoreCase(request.getMethod()) ) {
-            String command = request.getParams().get("command");
+        broadcastPrintEvent(new PrintEvent("Print request method:" + request.getMethod()));
 
-            //
-            if ( "Ss".equalsIgnoreCase(command) ) {
-                String deviceName = request.getParams().get("device");
+        switch (request.getMethod().toLowerCase()) {
+            // Handle request command
+            case "cmd.sendcommand": {
+                String command = request.getParams().getCommand();
 
-                if ( printers.containsKey(deviceName) ) {
+                // handle server status request
+                if ( "Ss".equalsIgnoreCase(command) ) {
+                    String deviceName = request.getParams().getDevice();
+
+                    if ( printers.containsKey(deviceName) ) {
+                        response = ESPFResponse.genericOKResponse(request.getId());
+                    } else {
+                        response.setResult("Device not found");
+                    }
+                } else {
+                    response.setResult("Command not found");
+                }
+
+            }
+                // handle print initiate request
+            case "print.begin" : {
+
+                Printer printer = getPrinter(request);
+
+                if ( printer != null ) {
+                    String jobId = printer.createJob();
                     response = ESPFResponse.genericOKResponse(request.getId());
+                    response.setResult(jobId);
+
+                    broadcastPrintEvent(new CreatePrintJobEvent(jobId));
+                } else {
+                    response.setResult("Device not found");
+                }
+
+            }
+
+            case "print.set": {
+                String deviceName = request.getParams().getDevice();
+
+                if (printers.containsKey(deviceName)) {
+                    Printer printer = printerManager.getPrinter(deviceName);
+                    String jobId = printer.createJob();
+                    response = ESPFResponse.genericOKResponse(request.getId());
+                    response.setResult(jobId);
                 } else {
                     response.setResult("Device not found");
                 }
             }
 
-            // handle print session start
-        } else if ( "PRINT.Begin".equalsIgnoreCase(request.getMethod()) ) {
-            String deviceName = request.getParams().get("device");
+            case "print.setbitmap": {
+                try {
+                    String bitmapString = request.getParams().getData();
 
-            if (printers.containsKey(deviceName)) {
-                Printer printer = printerManager.getPrinter(deviceName);
-                String jobId = printer.initialJob();
-                response = ESPFResponse.genericOKResponse(request.getId());
-                response.setResult(jobId);
-            } else {
-                response.setResult("Device not found");
-            }
-        } else if ( "PRINT.Set".equalsIgnoreCase(request.getMethod()) ) {
-            String deviceName = request.getParams().get("device");
+                    broadcastPrintEvent(new SetBitmapEvent(request.getParams().getFace(),
+                            bitmapString));
 
-            if (printers.containsKey(deviceName)) {
-                Printer printer = printerManager.getPrinter(deviceName);
-                String jobId = printer.initialJob();
-                response = ESPFResponse.genericOKResponse(request.getId());
-                response.setResult(jobId);
-            } else {
-                response.setResult("Device not found");
-            }
-        } else if ( "PRINT.SetBitmap".equalsIgnoreCase(request.getMethod()) ) {
-            try {
-                String bitmapString = request.getParams().get("data");
-                PrintEvent printEvent = new PrintEvent("SetBitmap", bitmapString);
+                    response = ESPFResponse.genericOKResponse(request.getId());
 
-                eventListeners.stream().forEach(l -> l.handlePrintEvent(printEvent));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-                response = ESPFResponse.genericOKResponse(request.getId());
-
-            } catch (Exception e) {
-                e.printStackTrace();
             }
 
-        } else if ( "PRINT.Print".equalsIgnoreCase(request.getMethod()) ) {
-            String deviceName = request.getParams().get("device");
+            case "print.print": {
+                Printer printer = getPrinter(request);
 
-            if (printers.containsKey(deviceName)) {
-                Printer printer = printerManager.getPrinter(deviceName);
-                String jobId = printer.initialJob();
-                response = ESPFResponse.genericOKResponse(request.getId());
-                response.setResult(jobId);
-            } else {
-                response.setResult("Device not found");
-            }
-        } else if ( "PRINT.End".equalsIgnoreCase(request.getMethod()) ) {
-            String deviceName = request.getParams().get("device");
+                if (printer != null) {
+                    String jobId = printer.createJob();
+                    response = ESPFResponse.genericOKResponse(request.getId());
+                    response.setResult(jobId);
+                } else {
+                    response.setResult("Device not found");
+                }
 
-            if (printers.containsKey(deviceName)) {
-                Printer printer = printerManager.getPrinter(deviceName);
-                String jobId = printer.initialJob();
-                response = ESPFResponse.genericOKResponse(request.getId());
-                response.setResult(jobId);
-            } else {
-                response.setResult("Device not found");
             }
-        } else {
-            response.setResult("Unknown method:" + request.getMethod());
+
+            case "print.end": {
+                String deviceName = request.getParams().getDevice();
+
+                if (printers.containsKey(deviceName)) {
+                    Printer printer = printerManager.getPrinter(deviceName);
+                    String jobId = printer.createJob();
+                    response = ESPFResponse.genericOKResponse(request.getId());
+                    response.setResult(jobId);
+                } else {
+                    response.setResult("Device not found");
+                }
+            }
+
         }
 
-        logger.debug("Response : " + response);
+        logger.debug("Response : " + response.toString());
 
         return response;
     }
 
+    private Printer getPrinter (ESPFRequest request) {
+
+        Printer printer = null;
+        String deviceName = request.getParams().getDevice();
+
+        if (printers.containsKey(deviceName)) {
+            printer = printerManager.getPrinter(deviceName);
+        }
+        return printer;
+    }
+
+    private PrintJob getPrintJob (ESPFRequest request) {
+        return null;
+    }
+
+    private void broadcastPrintEvent (PrintEvent printEvent) {
+        eventListeners.stream().forEach(l -> l.handlePrintEvent(printEvent));
+    }
 }
