@@ -6,7 +6,7 @@
 <GridPane fx:controller="com.kyanlife.code.evolis.controller.IDCardViewController"
           xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
 
-    <Label fx:id="printJobId" GridPane.columnIndex="0" GridPane.rowIndex="0">Print Job:</Label>
+    <Label fx:id="printJobId" GridPane.columnIndex="0" GridPane.rowIndex="0" >Print Job:</Label>
 
     <Label GridPane.columnIndex="0" GridPane.rowIndex="1">Front</Label>
 

@@ -48,7 +48,6 @@ public class IDCardViewController implements PrintEventListener {
 
             if ( printEvent instanceof CreatePrintJobEvent ) {
                 CreatePrintJobEvent createPrintJobEvent = (CreatePrintJobEvent) printEvent;
-                printJobId = new Label(createPrintJobEvent.getJobId());
 
                 setBackImage(IDCardViewController.class.getResourceAsStream(DEFAULT_IMAGE_PATH));
                 setFrontImage(IDCardViewController.class.getResourceAsStream(DEFAULT_IMAGE_PATH));
