@@ -96,12 +96,12 @@ public class PrinterManager {
 
             case "print.set": {
                 logger.debug("handle print.set");
-                String deviceName = request.getParams().getDevice();
-                if (printers.containsKey(deviceName)) {
+                //String deviceName = request.getParams().getDevice();
+                //if (printers.containsKey(deviceName)) {
                     response = ESPFResponse.genericOKResponse(request.getId());
-                } else {
-                    response.setResult("Device not found");
-                }
+                //} else {
+                //    response.setResult("Device not found");
+                //}
 
                 break;
             }
@@ -127,13 +127,13 @@ public class PrinterManager {
             case "print.print": {
                 logger.debug("handle print.print");
 
-                Printer printer = getPrinter(request);
+                //Printer printer = getPrinter(request);
 
-                if (printer != null) {
+                //if (printer != null) {
                     response = ESPFResponse.genericOKResponse(request.getId());
-                } else {
-                    response.setResult("Device not found");
-                }
+                //} else {
+                //    response.setResult("Device not found");
+                //}
 
                 break;
             }
@@ -141,13 +141,13 @@ public class PrinterManager {
             case "print.end": {
                 logger.debug("handle print.end");
 
-                String deviceName = request.getParams().getDevice();
+                //String deviceName = request.getParams().getDevice();
 
-                if (printers.containsKey(deviceName)) {
+                //if (printers.containsKey(deviceName)) {
                     response = ESPFResponse.genericOKResponse(request.getId());
-                } else {
-                    response.setResult("Device not found");
-                }
+                //} else {
+                //    response.setResult("Device not found");
+                //}
 
                 break;
             }
