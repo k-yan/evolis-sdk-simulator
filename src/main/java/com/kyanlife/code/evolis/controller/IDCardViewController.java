@@ -63,7 +63,7 @@ public class IDCardViewController implements PrintEventListener {
                         imageString = imageString.substring(7);
                     }
 
-                    byte[] imageByte = Base64.decodeBase64(imageString);
+                    byte[] imageByte = Base64.decodeBase64(imageString.getBytes("UTF-8"));
 
                     if ("back".equals(bitmapEvent.getFace())) {
                         setBackImage(new ByteArrayInputStream(imageByte));

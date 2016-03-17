@@ -22,7 +22,9 @@ public class JSONRequestHandler extends Thread {
     Logger logger = LoggerFactory.getLogger(JSONRequestHandler.class);
 
     // maximum time to read request input
-    static int REQUEST_INPUT_TIMEOUT = 5000;
+    static int REQUEST_INPUT_TIMEOUT = 15000;
+
+    static int BUFFER_SIZE = 1024;
 
     private Socket socket = null;
     ESPFRequestListener listener;
@@ -42,47 +44,55 @@ public class JSONRequestHandler extends Thread {
             // read request
             long requestStatTime = Calendar.getInstance().getTimeInMillis();
 
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(
-                            socket.getInputStream()));
+            InputStreamReader in = new InputStreamReader(socket.getInputStream(), "UTF-8");
 
             logger.debug("Reading socket input stream: " + in);
             String inputLine;
             StringBuilder requestString = new StringBuilder();
 
             boolean hasMoreInput = true;
+
+            char[] tempInputBuffer = new char[BUFFER_SIZE];
+
             while ( hasMoreInput ) {
 
-                inputLine = in.readLine();
+                int amntRead = in.read(tempInputBuffer);
 
-                if ( inputLine == null ) {
+                logger.debug("Amount data read : " + amntRead);
+                // if nothing is available
+                if ( amntRead < BUFFER_SIZE ) {
+
+                    // if request input timeout reached, stop reading input.
+                    if (Calendar.getInstance().getTimeInMillis() - requestStatTime > REQUEST_INPUT_TIMEOUT) {
+                        logger.debug("Request timeout");
+                        hasMoreInput = false;
+                        break;
+                    }
+                    // sleep then retry
+                }
+
+                Thread.sleep(50);
+
+                inputLine = new String(tempInputBuffer);
+
+                if (inputLine == null ) {
                     logger.debug("Input stream is NULL");
                     hasMoreInput = false;
                 } else {
                     requestString.append(inputLine);
 
                     // if request string is valid JSON, then request is complete
-                    if ( inputLine.trim().endsWith("}")
-                            && isJSONValid (requestString.toString()) ) {
+                    if (inputLine.trim().endsWith("}")
+                            && isJSONValid(requestString.toString())) {
                         logger.debug("Request is valid JSON object");
                         hasMoreInput = false;
                     }
                 }
 
-
-
-                // if request input timeout reached, stop reading input.
-                if ( hasMoreInput
-                        && Calendar.getInstance().getTimeInMillis() - requestStatTime > REQUEST_INPUT_TIMEOUT ) {
-                    logger.debug("Request timeout");
-                    hasMoreInput = false;
-                }
-
-                Thread.sleep(100);
             }
 
             // add response delay to simulate network or resource delay
-            Thread.sleep(MainProperties.getInteger("app.response.delay"));
+            //Thread.sleep(MainProperties.getInteger("app.response.delay"));
 
             logger.debug("Try to handle request: " + requestString);
 

@@ -8,7 +8,7 @@ public class ESPFRequestParameters {
     String command;
     String device;
     Integer timeout;
-    String data;
+    StringBuilder data;
     String session;
     String face;
     String panel;
@@ -37,11 +37,11 @@ public class ESPFRequestParameters {
         this.timeout = timeout;
     }
 
-    public String getData() {
+    public StringBuilder getData() {
         return data;
     }
 
-    public void setData(String data) {
+    public void setData(StringBuilder data) {
         this.data = data;
     }
 
