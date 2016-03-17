@@ -9,4 +9,5 @@
     <entry key="app.printer.name">Evolis Primacy</entry>
     <entry key="app.printer.ribbon">B_KBLACK</entry>
     <entry key="app.response.delay">1500</entry>
+    <entry key="app.socket.read.timeout">1000</entry>
 </properties>
