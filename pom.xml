@@ -6,7 +6,7 @@
 
     <groupId>com.kyanlife.code</groupId>
     <artifactId>evolis.ESPFSimulator</artifactId>
-    <version>1.4</version>
+    <version>1.5</version>
 
     <dependencies>
         <dependency>
