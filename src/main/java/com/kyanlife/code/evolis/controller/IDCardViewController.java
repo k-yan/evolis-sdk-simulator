@@ -7,8 +7,10 @@ import com.kyanlife.code.evolis.listener.PrintEventListener;
 import com.kyanlife.code.evolis.printer.PrinterManager;
 
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.apache.commons.codec.binary.Base64;
@@ -17,17 +19,20 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 /**
  * Created by kevinyan on 3/12/16.
  */
-public class IDCardViewController implements PrintEventListener {
+public class IDCardViewController implements Initializable, PrintEventListener {
 
     Logger logger = LoggerFactory.getLogger(IDCardViewController.class);
 
     private static String DEFAULT_IMAGE_PATH = "/com/kyanlife/code/evolis/fxml/BlankImage.bmp";
 
-    @FXML private Label printJobId;
+    @FXML
+    private TextField printJobId;
 
     @FXML private ImageView cardFrontImageView;
 
@@ -39,7 +44,8 @@ public class IDCardViewController implements PrintEventListener {
 
     @FXML private TextArea requestLogArea;
 
-    public IDCardViewController () {
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
         PrinterManager.addPrintEventListener(this);
     }
 
@@ -48,6 +54,8 @@ public class IDCardViewController implements PrintEventListener {
 
             if ( printEvent instanceof CreatePrintJobEvent ) {
                 CreatePrintJobEvent createPrintJobEvent = (CreatePrintJobEvent) printEvent;
+
+                printJobId.setText(createPrintJobEvent.getJobId());
 
                 setBackImage(IDCardViewController.class.getResourceAsStream(DEFAULT_IMAGE_PATH));
                 setFrontImage(IDCardViewController.class.getResourceAsStream(DEFAULT_IMAGE_PATH));

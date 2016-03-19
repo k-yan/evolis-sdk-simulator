@@ -5,6 +5,8 @@
     <!-- Top Navigation Menu -->
     <fx:include source="TopNavigationMenu.fxml" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
 
-    <fx:include source="IDCardView.fxml" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+    <fx:include source="PrinterSettingView.fxml" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+
+    <fx:include source="IDCardView.fxml" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
 
 </GridPane>
