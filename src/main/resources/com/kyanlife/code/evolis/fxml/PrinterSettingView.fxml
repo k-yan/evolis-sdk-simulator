@@ -2,9 +2,10 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <GridPane fx:controller="com.kyanlife.code.evolis.controller.PrinterViewController"
-          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
+          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10"
+        styleClass="printerSettingGrid">
 
-    <Label GridPane.columnIndex="0" GridPane.rowIndex="0">Host Name:</Label>
+    <Label GridPane.columnIndex="0" GridPane.rowIndex="0">Server Name:</Label>
 
     <TextField fx:id="hostName" GridPane.columnIndex="1" GridPane.rowIndex="0" disable="true"/>
 

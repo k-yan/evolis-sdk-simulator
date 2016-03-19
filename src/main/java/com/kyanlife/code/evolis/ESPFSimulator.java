@@ -22,6 +22,8 @@ public class ESPFSimulator extends Application {
         primaryStage.setScene(new Scene(root,
                 MainProperties.getInteger("app.window.width"),
                 MainProperties.getInteger("app.window.height")));
+
+        root.getStylesheets().add("css/layoutstyle.css");
         primaryStage.show();
 
         requestListener = new JSONRequestListener(
