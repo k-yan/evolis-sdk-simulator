@@ -7,9 +7,15 @@
 <GridPane fx:controller="com.kyanlife.code.evolis.controller.IDCardViewController"
           xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
 
-    <Label GridPane.columnIndex="0" GridPane.rowIndex="0" >Print Job:</Label>
+    <GridPane GridPane.columnIndex="0" GridPane.rowIndex="0" hgap="10" vgap="10">
+        <Label GridPane.columnIndex="0" GridPane.rowIndex="0" >Print Job:</Label>
+        <TextField fx:id="printJobId" GridPane.columnIndex="1" GridPane.rowIndex="0" disable="true"/>
+    </GridPane>
+    <GridPane GridPane.columnIndex="1" GridPane.rowIndex="0" hgap="10" vgap="10">
+    <Label GridPane.columnIndex="0" GridPane.rowIndex="0">Request host:</Label>
+        <TextField fx:id="requestHost" GridPane.columnIndex="1" GridPane.rowIndex="0" disable="true"/>
 
-    <TextField fx:id="printJobId" GridPane.columnIndex="1" GridPane.rowIndex="0" disable="true"/>
+    </GridPane>
 
     <Label GridPane.columnIndex="0" GridPane.rowIndex="1">Front</Label>
 

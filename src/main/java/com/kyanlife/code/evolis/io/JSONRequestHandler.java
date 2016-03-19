@@ -92,7 +92,9 @@ public class JSONRequestHandler extends Thread {
 
             // send response
             OutputStream out = socket.getOutputStream();
-            out.write(handleRequest(requestString.toString()).getBytes("UTF-8"));
+            out.write(handleRequest(requestString.toString(),
+                    socket.getRemoteSocketAddress().toString())
+                    .getBytes("UTF-8"));
             out.close();
 
             socket.close();
@@ -102,7 +104,7 @@ public class JSONRequestHandler extends Thread {
     }
 
 
-    private String handleRequest (String requestString) {
+    private String handleRequest (String requestString, String requestHost) {
         String responseString;
 
         try {
@@ -112,7 +114,7 @@ public class JSONRequestHandler extends Thread {
             ObjectMapper jsonMapper = new ObjectMapper();
 
             ESPFRequest requestObj = jsonMapper.readValue(requestString, ESPFRequest.class);
-
+            requestObj.setRequestHost(requestHost);
             logger.debug("Request object: " + requestObj);
 
             ESPFResponse responseObj = PrinterManager.getInstance().processRequest(requestObj);

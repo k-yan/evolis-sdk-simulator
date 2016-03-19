@@ -34,6 +34,9 @@ public class IDCardViewController implements Initializable, PrintEventListener {
     @FXML
     private TextField printJobId;
 
+    @FXML
+    private TextField requestHost;
+
     @FXML private ImageView cardFrontImageView;
 
     @FXML private Image cardFrontImage;
@@ -56,6 +59,7 @@ public class IDCardViewController implements Initializable, PrintEventListener {
                 CreatePrintJobEvent createPrintJobEvent = (CreatePrintJobEvent) printEvent;
 
                 printJobId.setText(createPrintJobEvent.getJobId());
+                requestHost.setText(createPrintJobEvent.getRequestHost());
 
                 setBackImage(IDCardViewController.class.getResourceAsStream(DEFAULT_IMAGE_PATH));
                 setFrontImage(IDCardViewController.class.getResourceAsStream(DEFAULT_IMAGE_PATH));

@@ -5,6 +5,7 @@ package com.kyanlife.code.evolis.events;
  */
 public class PrintEvent {
 
+    String requestHost;
     String eventType;
     String eventDescription;
 
@@ -33,9 +34,18 @@ public class PrintEvent {
         this.eventDescription = eventDescription;
     }
 
+    public String getRequestHost() {
+        return requestHost;
+    }
+
+    public void setRequestHost(String requestHost) {
+        this.requestHost = requestHost;
+    }
+
     @Override
     public String toString() {
         return "PrintEvent{" +
+                "requestHost='" + requestHost + '\'' +
                 "eventType='" + eventType + '\'' +
                 ", eventDescription='" + eventDescription + '\'' +
                 '}';

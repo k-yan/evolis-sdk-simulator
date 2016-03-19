@@ -86,7 +86,9 @@ public class PrinterManager {
                     response = ESPFResponse.genericOKResponse(request.getId());
                     response.setResult(jobId);
 
-                    broadcastPrintEvent(new CreatePrintJobEvent(jobId));
+                    CreatePrintJobEvent event = new CreatePrintJobEvent(jobId);
+                    event.setRequestHost(request.getRequestHost());
+                    broadcastPrintEvent(event);
                 } else {
                     response.setResult("Device not found");
                 }

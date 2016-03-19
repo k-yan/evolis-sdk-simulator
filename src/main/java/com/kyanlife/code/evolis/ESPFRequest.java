@@ -14,6 +14,8 @@ public class ESPFRequest {
     String method;
     ESPFRequestParameters params;
 
+    String requestHost;
+
     public String getId() {
         return id;
     }
@@ -46,9 +48,18 @@ public class ESPFRequest {
         this.params = params;
     }
 
+    public String getRequestHost() {
+        return requestHost;
+    }
+
+    public void setRequestHost(String requestHost) {
+        this.requestHost = requestHost;
+    }
+
     @Override
     public String toString() {
         return "ESPFRequest{" +
+                "host='" + requestHost + '\'' +
                 "id='" + id + '\'' +
                 ", jsonrpc='" + jsonrpc + '\'' +
                 ", method='" + method + '\'' +
